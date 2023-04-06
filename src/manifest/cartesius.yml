@@ -1,0 +1,41 @@
+script: '#!/bin/sh
+
+  #SBATCH -J %(JOBNAME)s       #specify job name
+
+  #SBATCH -e %(JOBNAME)s.err   #specify standard error stream path(s)
+
+  #SBATCH -o %(JOBNAME)s.out   #specify standard output stream path(s)
+
+  #SBATCH -n %(NCPUS)s         #request slot range for parallel jobs
+
+  #SBATCH -D %(WORKDIR)s       #specify the path of the working directory
+
+  #SBATCH -t %(WALLTIME)s      #Wall time
+
+  #SBATCH -p thin           #Request a specific partition: normal/fat/short
+
+
+  #Set vasp running environment
+
+  #(Import modules)
+
+  module load 2021
+
+  module load VASP5/5.4.4.pl2-foss-2021a-CUDA-11.3.1
+
+
+  #Set mpirun and ncpus
+
+  #(Execute vasp)
+
+  srun vasp_std  
+
+  wait
+
+  '
+
+submit: sbatch
+check: squeue -j
+kill: scancel 
+status-idx: 12
+jobid-idx: 3

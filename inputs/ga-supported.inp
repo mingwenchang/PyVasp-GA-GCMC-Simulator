@@ -1,0 +1,55 @@
+#Path to GAGCMC package: 
+gagcmcdir: 'cwd' #curent workding dir/an absolute path to gagcmc package  
+
+#Data setting
+#NOTE:
+#For a supported cluster ga mode
+#POSCAR contains the information of a well-defined BARE/CLEAN surface. 
+#POTCAR contains the pseudopotential for each atomic species with the following orders:
+#slab-atom1, slab-atom2,..., clu-atom1, clu-atom2,... (Always put POTCARs of slab atoms in the first!!)
+inputs: # the '-' symbole is required. 
+   - INCAR
+   - KPOINTS 
+   - POTCAR 
+   - POSCAR 
+#  - vdw_kernel.bindat #for vdw-DFT calculations
+
+#environment setting:
+vacuum: True #GA simulation in the NVT ensemble 
+temperature: 300. #(K) Boltzmann population at a given temperature  
+ 
+#GA run setting:
+#This setting will generate and screen over 40*12 = 480 structures 
+gamode: supported #free/supported
+maxgacycle: 40 # maximum itetative cycle for GA 
+genpopsize: 12 #the population size for GA per generation
+mutationrate: 0.80 # 0 < mutation rate < 1
+ 
+#Cluster composition setting:
+#formate (the order is matter!!):   
+cluster: #same as your POTCAR!! 
+    - Au: 8
+#   - Pd: 2
+#   - atom: natoms 
+
+#Supported cluster landing setting:
+landingat: [0.500, 0.500, 0.2377] #fractional coordinate!; bracket is required
+altitude: 2.30 #The dz distance between the cluster and the slab
+nanchors: 4 #how many bonds between the cluster and the slab (~ natoms/2)
+
+#HPC setting
+hpc: cartesius #cartesius/tue/(a path to a yaml file) 
+ncpus: 96 #the number of processors (cpus) per a job 
+walltime: 4 #the time limit (hours) for a job 
+refreshtime: 300 #refresh time (sec) for the info update of GA 
+maxretry: 2  #max. attempts for an unconverged job
+
+#Converge criterion setting
+force: 0.05  #force unit in Angstrom/eV (same as the ediffg value in INCAR)
+
+#The parameters to characterize two clusters whether identical:
+#Usually, you don't neet to change them.
+#cf. https://doi.org/10.1063/1.4886337
+drel: 0.03 #the relative accumulated differences between two candidates
+dmax: 0.07 #the maximum difference between two distances in two candidates 
+dene: 0.02 ##the minimum energy difference between two candidates 

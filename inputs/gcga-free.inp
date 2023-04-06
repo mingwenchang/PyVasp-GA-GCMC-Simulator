@@ -1,0 +1,60 @@
+#Path to GAGCMC package: 
+gagcmcdir: 'cwd' #curent workding dir/an absolute path to gagcmc package  
+
+#Data setting
+#NOTE:
+#For a free cluster gcga mode:
+#POSCAR contains the information of a well-defined box
+#POTCAR contains the pseudopotential for each atomic species with the following orders:
+#clu-atom1, clu-atom2, gas-atom1, gas-atom2. (Always put POTCARs of clu atoms in the first!!)
+inputs: # the '-' symbole is required. 
+   - INCAR
+   - KPOINTS 
+   - POTCAR 
+   - POSCAR 
+#  - vdw_kernel.bindat #for vdw-DFT calculations
+
+#environment setting:
+vacuum: False #GA simulation in a mu-VT ensemble 
+temperature: 300. #(K)
+pressure: 1.00#(bar) 
+gasphase: O  #only support linear/monatomic molecules  
+#Chemical potential of O:
+#mu = 0.5*[Etotal(O2) + Ezpe(O2) + mu(P, T)(O2)]
+#from the NIST table (eV) or pyVASPtools (idealthermo.py)
+chempot: 
+    - O: -2.5745 #chemial potential of O (eV)
+    - Au: -0.183494 #the energy per Au atom (eV)
+    - Pd: -1.461596 #the energy per Pd atom (eV)
+ 
+#GA run setting:
+#This setting will generate and screen over 50*12 = 600 structures
+gamode: free #free/supported
+maxgacycle: 50 # maximum itetative cycle for GA 
+genpopsize: 12 #the population size for GA per generation
+mutationrate: 0.80 # 0 < mutation rate < 1
+idtrate: [0.333, 0.333, 0.333] #[Pins, Pdel, Ptrans]
+
+#Cluster composition setting:
+#formate (the order is matter!!):   
+cluster: #same as your POTCAR!! 
+    - Au: 6 
+    - Pd: 2
+#   - X: num
+ 
+#HPC setting
+hpc: cartesius #cartesius/tue/(a path to a yaml file) 
+ncpus: 24 #the number of processors (cpus) per a job 
+walltime: 4 #the time limit (hours) for a job 
+refreshtime: 300 #refresh time (sec) for the info update of GA 
+maxretry: 2  #max. attempts for an unconverged job
+
+#Converge criterion setting
+force: 0.10  #force unit in Angstrom/eV (same as the ediffg value in INCAR)
+
+#The parameters to characterize two clusters whether identical:
+#Usually, you don't neet to change them.
+#cf. https://doi.org/10.1063/1.4886337
+drel: 0.03 #the relative accumulated differences between two candidates
+dmax: 0.07 #the maximum difference between two distances in two candidates 
+dene: 0.02 ##the minimum energy difference between two candidates 

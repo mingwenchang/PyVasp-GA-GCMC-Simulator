@@ -1,0 +1,48 @@
+script: '#!/bin/sh
+
+  #$ -N %(JOBNAME)s        #specify job name
+
+  #$ -e %(JOBNAME)s.err    #specify standard error stream path(s)
+
+  #$ -o %(JOBNAME)s.out    #specify standard output stream path(s)
+
+  #$ -pe openmpi %(NCPUS)s #request slot range for parallel jobs
+
+  #$ -wd %(WORKDIR)s       #specify the path of the working directory
+
+  #$ -q smk.q              #bind job to queue(s)           
+
+  #$ -l %(WALLTIME)s      #Wall time
+
+
+
+  #Set vasp running environment
+
+  #(Import modules)
+
+  module purge
+
+  module load shared
+
+  module load intel/mkl/64
+
+  module load intel-mpi/64
+
+  module load vasp/5.3.5/gammampi
+
+
+  #Set mpirun and ncpus
+
+  #(Execute vasp)
+
+  time mpirun -np %(NCPUS)s vasp.real
+
+  wait
+
+  '
+
+submit: qsub
+check: qstat
+kill: qdel
+status-idx: 12
+jobid-idx: 3
